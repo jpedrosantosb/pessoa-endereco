@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.jpbastos.gerenciadorPessoas.entities.Pessoa;
+import com.jpbastos.gerenciadorPessoas.model.entities.Pessoa;
 import com.jpbastos.gerenciadorPessoas.service.PessoaService;
 
 @RestController
@@ -26,34 +26,35 @@ public class PessoaController {
 	private PessoaService service;
 
 	@GetMapping
-	public ResponseEntity<List<Pessoa>> findAll() {
-		List<Pessoa> list = service.findAll();
-		return ResponseEntity.ok().body(list);
+	public ResponseEntity<List<Pessoa>> listarTodasPessoas() {
+		List<Pessoa> pessoas = service.findAll();
+		return ResponseEntity.ok().body(pessoas);
 	}
 
-	@GetMapping(value = "/{id}")
-	public ResponseEntity<Pessoa> findById(@PathVariable Long id) {
-		Pessoa obj = service.findById(id);
-		return ResponseEntity.ok().body(obj);
+	@GetMapping("/{id}")
+	public ResponseEntity<Pessoa> buscarPessoaPorId(@PathVariable Long id) {
+		Pessoa pessoa = service.findById(id);
+		return ResponseEntity.ok().body(pessoa);
 	}
 
 	@PostMapping
-	public ResponseEntity<Pessoa> insert(@RequestBody Pessoa obj) {
-		obj = service.insert(obj);
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(obj.getId()).toUri();
-		return ResponseEntity.created(uri).body(obj);
+	public ResponseEntity<Pessoa> criarPessoa(@RequestBody Pessoa pessoa) {
+		Pessoa pessoaCriada = service.criarPessoa(pessoa);
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(pessoaCriada.getId())
+				.toUri();
+		return ResponseEntity.created(uri).body(pessoaCriada);
 	}
 
-	@DeleteMapping(value = "/{id}")
-	public ResponseEntity<Void> delete(@PathVariable Long id) {
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Void> deletarPessoa(@PathVariable Long id) {
 		service.delete(id);
 		return ResponseEntity.noContent().build();
 	}
 
-	@PutMapping(value = "/{id}")
-	public ResponseEntity<Pessoa> update(@PathVariable Long id, @RequestBody Pessoa obj) {
-		obj = service.update(id, obj);
-		return ResponseEntity.ok().body(obj);
+	@PutMapping("/{id}")
+	public ResponseEntity<Pessoa> atualizarPessoa(@PathVariable Long id, @RequestBody Pessoa pessoaAtualizada) {
+		Pessoa pessoaSalva = service.update(id, pessoaAtualizada);
+		return ResponseEntity.ok().body(pessoaSalva);
 	}
 
 }

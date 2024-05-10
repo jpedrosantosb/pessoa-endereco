@@ -15,7 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.jpbastos.gerenciadorPessoas.entities.Endereco;
+import com.jpbastos.gerenciadorPessoas.model.entities.Endereco;
+import com.jpbastos.gerenciadorPessoas.model.entities.Pessoa;
 import com.jpbastos.gerenciadorPessoas.service.EnderecoService;
 
 @RestController
@@ -26,33 +27,36 @@ public class EnderecoController {
 	private EnderecoService service;
 
 	@GetMapping
-	public ResponseEntity<List<Endereco>> findAll() {
-		List<Endereco> list = service.findAll();
-		return ResponseEntity.ok().body(list);
+	public ResponseEntity<List<Endereco>> listarTodosEnderecos() {
+		return ResponseEntity.ok().body(service.findAll());
 	}
 
-	@GetMapping(value = "/{id}")
-	public ResponseEntity<Endereco> findById(@PathVariable Long id) {
-		Endereco obj = service.findById(id);
-		return ResponseEntity.ok().body(obj);
+	@GetMapping("/{id}")
+	public ResponseEntity<Endereco> buscarEnderecoPorId(@PathVariable Long id) {
+		Endereco endereco = service.findById(id);
+		if (endereco == null) {
+			return ResponseEntity.notFound().build();
+		}
+		return ResponseEntity.ok().body(endereco);
 	}
 
 	@PostMapping
-	public ResponseEntity<Endereco> insert(@RequestBody Endereco obj) {
-		obj = service.insert(obj);
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(obj.getId()).toUri();
-		return ResponseEntity.created(uri).body(obj);
+	public ResponseEntity<Endereco> criarEndereco(@RequestBody Endereco endereco) {
+		Endereco enderecoCriado = service.insert(endereco);
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(enderecoCriado.getId())
+				.toUri();
+		return ResponseEntity.created(uri).body(enderecoCriado);
 	}
 
-	@DeleteMapping(value = "/{id}")
-	public ResponseEntity<Void> delete(@PathVariable Long id) {
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Void> deletarEndereco(@PathVariable Long id) {
 		service.delete(id);
 		return ResponseEntity.noContent().build();
 	}
 
-	@PutMapping(value = "/{id}")
-	public ResponseEntity<Endereco> update(@PathVariable Long id, @RequestBody Endereco obj) {
-		obj = service.update(id, obj);
-		return ResponseEntity.ok().body(obj);
+	@PutMapping("/{id}")
+	public ResponseEntity<Endereco> atualizarEndereco(@PathVariable Long id, @RequestBody Endereco enderecoAtualizado) {
+		Endereco enderecoSalvo = service.update(id, enderecoAtualizado);
+		return ResponseEntity.ok().body(enderecoSalvo);
 	}
 }

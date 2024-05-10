@@ -8,7 +8,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
-import com.jpbastos.gerenciadorPessoas.entities.Pessoa;
+import com.jpbastos.gerenciadorPessoas.model.entities.Pessoa;
 import com.jpbastos.gerenciadorPessoas.repositories.PessoaRepository;
 import com.jpbastos.gerenciadorPessoas.service.exceptions.DatabaseException;
 import com.jpbastos.gerenciadorPessoas.service.exceptions.ResourceNotFoundException;
@@ -28,7 +28,7 @@ public class PessoaService {
 		return obj.orElseThrow(() -> new ResourceNotFoundException(id));
 	}
 
-	public Pessoa insert(Pessoa obj) {
+	public Pessoa criarPessoa(Pessoa obj) {
 		return pessoaRepository.save(obj);
 	}
 

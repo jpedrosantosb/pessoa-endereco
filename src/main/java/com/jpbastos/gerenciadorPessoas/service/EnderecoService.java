@@ -8,7 +8,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
-import com.jpbastos.gerenciadorPessoas.entities.Endereco;
+import com.jpbastos.gerenciadorPessoas.model.entities.Endereco;
 import com.jpbastos.gerenciadorPessoas.repositories.EnderecoRepository;
 import com.jpbastos.gerenciadorPessoas.service.exceptions.DatabaseException;
 import com.jpbastos.gerenciadorPessoas.service.exceptions.ResourceNotFoundException;
