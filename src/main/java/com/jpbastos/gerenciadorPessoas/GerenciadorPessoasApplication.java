@@ -33,6 +33,7 @@ public class GerenciadorPessoasApplication {
 			pessoa2.setNomeCompleto("Kamila Braga Ortiz");
 			pessoa2.setDataNascimento(LocalDate.of(1996, 5, 20));
 
+			
 			Endereco endereco1 = new Endereco(null, "Rua das Flores", "12345-678", "123", "São Paulo", "SP", pessoa1,
 					true);
 			Endereco endereco2 = new Endereco(null, "Rua das Arvores", "12345-321", "0102", "Brasília", "DF", pessoa1,
