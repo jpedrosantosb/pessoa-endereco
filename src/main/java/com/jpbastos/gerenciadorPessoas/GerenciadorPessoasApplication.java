@@ -20,36 +20,36 @@ public class GerenciadorPessoasApplication {
 		SpringApplication.run(GerenciadorPessoasApplication.class, args);
 	}
 
-	@Bean
-	CommandLineRunner initDataBase(PessoaRepository pessoaRep, EnderecoRepository enderecoRep) {
-		return args -> {
-			pessoaRep.deleteAll();
-			enderecoRep.deleteAll();
-
-			Pessoa pessoa1 = new Pessoa();
-			pessoa1.setNomeCompleto("João Pedro dos Santos");
-			pessoa1.setDataNascimento(LocalDate.now());
-			Pessoa pessoa2 = new Pessoa();
-			pessoa2.setNomeCompleto("Kamila Braga Ortiz");
-			pessoa2.setDataNascimento(LocalDate.of(1996, 5, 20));
-
-			Endereco endereco1 = new Endereco(null, "Rua das Flores", "12345-678", 123, "São Paulo", "SP", true,
-					pessoa1);
-			Endereco endereco2 = new Endereco(null, "Rua das Arvores", "12345-321", 0102, "Brasília", "DF", false,
-					pessoa1);
-			Endereco endereco3 = new Endereco(null, "Rua das Plantas", "12345-100", 020, "Rio de Janeiro", "RJ", true,
-					pessoa2);
-
-			pessoaRep.saveAll(Arrays.asList(pessoa1, pessoa2));
-			enderecoRep.saveAll(Arrays.asList(endereco1, endereco2, endereco3));
-
-			pessoa1.getEnderecos().add(endereco1);
-			pessoa1.getEnderecos().add(endereco2);
-			pessoa2.getEnderecos().add(endereco3);
-
-			pessoaRep.saveAll(Arrays.asList(pessoa1, pessoa2));
-			// enderecoRep.saveAll(Arrays.asList(endereco1, endereco2, endereco3));
-		};
-	}
+//	@Bean
+//	CommandLineRunner initDataBase(PessoaRepository pessoaRep, EnderecoRepository enderecoRep) {
+//		return args -> {
+//			pessoaRep.deleteAll();
+//			enderecoRep.deleteAll();
+//
+//			Pessoa pessoa1 = new Pessoa();
+//			pessoa1.setNomeCompleto("João Pedro dos Santos");
+//			pessoa1.setDataNascimento(LocalDate.now());
+//			Pessoa pessoa2 = new Pessoa();
+//			pessoa2.setNomeCompleto("Kamila Braga Ortiz");
+//			pessoa2.setDataNascimento(LocalDate.of(1996, 5, 20));
+//
+//			Endereco endereco1 = new Endereco(null, "Rua das Flores", "12345-678", 123, "São Paulo", "SP", true,
+//					1L);
+//			Endereco endereco2 = new Endereco(null, "Rua das Arvores", "12345-321", 0102, "Brasília", "DF", false,
+//					2L);
+//			Endereco endereco3 = new Endereco(null, "Rua das Plantas", "12345-100", 020, "Rio de Janeiro", "RJ", true,
+//					2L);
+//
+//			pessoaRep.saveAll(Arrays.asList(pessoa1, pessoa2));
+//			enderecoRep.saveAll(Arrays.asList(endereco1, endereco2, endereco3));
+//
+//			pessoa1.getEnderecos().add(endereco1);
+//			pessoa1.getEnderecos().add(endereco2);
+//			pessoa2.getEnderecos().add(endereco3);
+//
+//			pessoaRep.saveAll(Arrays.asList(pessoa1, pessoa2));
+//			// enderecoRep.saveAll(Arrays.asList(endereco1, endereco2, endereco3));
+//		};
+//	}
 
 }

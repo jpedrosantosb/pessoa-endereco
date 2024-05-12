@@ -11,9 +11,13 @@ import com.jpbastos.gerenciadorPessoas.service.exceptions.DatabaseException;
 import com.jpbastos.gerenciadorPessoas.service.exceptions.ResourceNotFoundException;
 
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @ControllerAdvice
-public class ResourceExceptionHandler {
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class ResourceExceptionHandler extends RuntimeException {
 
 	@ExceptionHandler(ResourceNotFoundException.class)
 	public ResponseEntity<StandardError> resourceNotFound(ResourceNotFoundException e, HttpServletRequest request) {

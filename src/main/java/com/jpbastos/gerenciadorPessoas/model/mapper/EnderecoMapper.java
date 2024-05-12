@@ -1,6 +1,7 @@
 package com.jpbastos.gerenciadorPessoas.model.mapper;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
 
 import com.jpbastos.gerenciadorPessoas.model.dtos.EnderecoDTO;
@@ -14,5 +15,5 @@ public interface EnderecoMapper {
     EnderecoDTO toDTO(Endereco endereco);
     Endereco toObject(EnderecoDTO enderecoDTO);
 	
-	
+    void updateFromDTO(EnderecoDTO dto, @MappingTarget Endereco endereco);
 }

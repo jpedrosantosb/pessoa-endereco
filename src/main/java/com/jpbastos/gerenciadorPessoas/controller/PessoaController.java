@@ -15,8 +15,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.jpbastos.gerenciadorPessoas.model.dtos.PessoaDTO;
 import com.jpbastos.gerenciadorPessoas.model.entities.Pessoa;
 import com.jpbastos.gerenciadorPessoas.service.PessoaService;
+import com.jpbastos.gerenciadorPessoas.service.exceptions.DatabaseException;
+import com.jpbastos.gerenciadorPessoas.service.exceptions.ResourceNotFoundException;
 
 @RestController
 @RequestMapping("/pessoa")
@@ -27,13 +30,13 @@ public class PessoaController {
 
 	@GetMapping
 	public ResponseEntity<List<Pessoa>> listarTodasPessoas() {
-		List<Pessoa> pessoas = service.findAll();
+		List<Pessoa> pessoas = service.buscarTodos();
 		return ResponseEntity.ok().body(pessoas);
 	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<Pessoa> buscarPessoaPorId(@PathVariable Long id) {
-		Pessoa pessoa = service.findById(id);
+		Pessoa pessoa = service.buscarPorId(id);
 		return ResponseEntity.ok().body(pessoa);
 	}
 
@@ -47,14 +50,20 @@ public class PessoaController {
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> deletarPessoa(@PathVariable Long id) {
-		service.delete(id);
+		service.deletarPorId(id);
 		return ResponseEntity.noContent().build();
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<Pessoa> atualizarPessoa(@PathVariable Long id, @RequestBody Pessoa pessoaAtualizada) {
-		Pessoa pessoaSalva = service.update(id, pessoaAtualizada);
-		return ResponseEntity.ok().body(pessoaSalva);
+	public ResponseEntity<?> atualizarPessoa(@PathVariable Long id, @RequestBody PessoaDTO pessoaDTO) {
+		try {
+			service.atualizarPessoa(id, pessoaDTO);
+			return ResponseEntity.ok().build();
+		} catch (ResourceNotFoundException e) {
+			return ResponseEntity.notFound().build();
+		} catch (DatabaseException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
 	}
 
 }

@@ -8,7 +8,9 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import com.jpbastos.gerenciadorPessoas.model.dtos.PessoaDTO;
 import com.jpbastos.gerenciadorPessoas.model.entities.Pessoa;
+import com.jpbastos.gerenciadorPessoas.model.mapper.PessoaMapper;
 import com.jpbastos.gerenciadorPessoas.repositories.PessoaRepository;
 import com.jpbastos.gerenciadorPessoas.service.exceptions.DatabaseException;
 import com.jpbastos.gerenciadorPessoas.service.exceptions.ResourceNotFoundException;
@@ -18,21 +20,22 @@ public class PessoaService {
 
 	@Autowired
 	private PessoaRepository pessoaRepository;
+	private final PessoaMapper pessoaMapper = PessoaMapper.INSTANCE;
 
-	public List<Pessoa> findAll() {
+	public List<Pessoa> buscarTodos() {
 		return pessoaRepository.findAll();
 	}
 
-	public Pessoa findById(Long id) {
-		Optional<Pessoa> obj = pessoaRepository.findById(id);
-		return obj.orElseThrow(() -> new ResourceNotFoundException(id));
+	public Pessoa buscarPorId(Long id) {
+		Optional<Pessoa> pessoa = pessoaRepository.findById(id);
+		return pessoa.orElseThrow(() -> new ResourceNotFoundException(id));
 	}
 
-	public Pessoa criarPessoa(Pessoa obj) {
-		return pessoaRepository.save(obj);
+	public Pessoa criarPessoa(Pessoa pessoa) {
+		return pessoaRepository.save(pessoa);
 	}
 
-	public void delete(Long id) {
+	public void deletarPorId(Long id) {
 		try {
 			pessoaRepository.deleteById(id);
 		} catch (EmptyResultDataAccessException e) {
@@ -42,16 +45,28 @@ public class PessoaService {
 		}
 	}
 
-	public Pessoa update(Long id, Pessoa obj) {
-		Pessoa entity = pessoaRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
-		updateData(entity, obj);
-		return pessoaRepository.save(entity);
+	public void atualizarPessoa(Long idPessoa, PessoaDTO pessoaDTO) {
+		if (pessoaDTO == null) {
+			throw new DatabaseException("PessoaDTO não pode ser nulo");
+		}
+		Optional<Pessoa> pessoaOptional = pessoaRepository.findById(idPessoa);
+		if (pessoaOptional.isEmpty()) {
+			throw new ResourceNotFoundException(idPessoa);
+		}
+		Pessoa pessoa = pessoaMapper.toObject(pessoaDTO);
+		pessoaRepository.save(pessoa);
 	}
-
-	private void updateData(Pessoa entity, Pessoa obj) {
-		entity.setNomeCompleto(obj.getNomeCompleto());
-		entity.setDataNascimento(obj.getDataNascimento());
-		entity.setEnderecos(obj.getEnderecos());
-	}
+	
+//	public Pessoa atualizarPessoa(Long id, PessoaDTO obj) {
+//		Pessoa entity = pessoaRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
+//		updateData(entity, obj);
+//		return pessoaRepository.save(entity);
+//	}
+//
+//	private void updateData(Pessoa entity, PessoaDTO obj) {
+//		entity.setNomeCompleto(obj.getNomeCompleto());
+//		entity.setDataNascimento(obj.getDataNascimento());
+//		entity.setEnderecos(obj.getEnderecos());
+//	}
 
 }

@@ -15,9 +15,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.jpbastos.gerenciadorPessoas.model.dtos.EnderecoDTO;
 import com.jpbastos.gerenciadorPessoas.model.entities.Endereco;
-import com.jpbastos.gerenciadorPessoas.model.entities.Pessoa;
 import com.jpbastos.gerenciadorPessoas.service.EnderecoService;
+import com.jpbastos.gerenciadorPessoas.service.exceptions.DatabaseException;
+import com.jpbastos.gerenciadorPessoas.service.exceptions.ResourceNotFoundException;
 
 @RestController
 @RequestMapping("/enderecos")
@@ -28,12 +30,12 @@ public class EnderecoController {
 
 	@GetMapping
 	public ResponseEntity<List<Endereco>> listarTodosEnderecos() {
-		return ResponseEntity.ok().body(service.findAll());
+		return ResponseEntity.ok().body(service.buscarTodos());
 	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<Endereco> buscarEnderecoPorId(@PathVariable Long id) {
-		Endereco endereco = service.findById(id);
+		Endereco endereco = service.buscarPorId(id);
 		if (endereco == null) {
 			return ResponseEntity.notFound().build();
 		}
@@ -42,7 +44,7 @@ public class EnderecoController {
 
 	@PostMapping
 	public ResponseEntity<Endereco> criarEndereco(@RequestBody Endereco endereco) {
-		Endereco enderecoCriado = service.insert(endereco);
+		Endereco enderecoCriado = service.criarEndereco(endereco);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(enderecoCriado.getId())
 				.toUri();
 		return ResponseEntity.created(uri).body(enderecoCriado);
@@ -50,13 +52,19 @@ public class EnderecoController {
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> deletarEndereco(@PathVariable Long id) {
-		service.delete(id);
+		service.deletarPorId(id);
 		return ResponseEntity.noContent().build();
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<Endereco> atualizarEndereco(@PathVariable Long id, @RequestBody Endereco enderecoAtualizado) {
-		Endereco enderecoSalvo = service.update(id, enderecoAtualizado);
-		return ResponseEntity.ok().body(enderecoSalvo);
+	public ResponseEntity<?> atualizarEndereco(@PathVariable Long id, @RequestBody EnderecoDTO enderecoDTO) {
+		try {
+			service.atualizarEndereco(id, enderecoDTO);
+			return ResponseEntity.ok().build();
+		} catch (ResourceNotFoundException e) {
+			return ResponseEntity.notFound().build();
+		} catch (DatabaseException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
 	}
 }
